@@ -10,6 +10,7 @@ xiaozhi-esp32-server
   ├─ manager-api 8002 端口 Java语言开发 负责提供控制台的api
 ```
 
+
 # xiaozhi-server 和ESP32通讯协议
 
 https://ccnphfhqs21z.feishu.cn/wiki/M0XiwldO9iJwHikpXD5cEx71nKh
