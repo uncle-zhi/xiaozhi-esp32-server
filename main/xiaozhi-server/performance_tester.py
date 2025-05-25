@@ -10,14 +10,16 @@ from config.settings import load_config
 import inspect
 import os
 import logging
+import concurrent.futures
 
 # 设置全局日志级别为WARNING，抑制INFO级别日志
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 
 class AsyncPerformanceTester:
     def __init__(self):
         self.config = load_config()
+
         self.test_sentences = self.config.get("module_test", {}).get(
             "test_sentences",
             [
@@ -67,7 +69,7 @@ class AsyncPerformanceTester:
                 and any(x in config[field] for x in ["你的", "placeholder"])
                 for field in token_fields
             ):
-                print(f"⏭️  TTS {tts_name} 未配置access_token/api_key，已跳过")
+               # print(f"⏭️  TTS {tts_name} 未配置access_token/api_key，已跳过")
                 return {"name": tts_name, "type": "tts", "errors": 1}
 
             module_type = config.get("type", tts_name)
@@ -86,7 +88,9 @@ class AsyncPerformanceTester:
             test_count = len(self.test_sentences[:2])
 
             for i, sentence in enumerate(self.test_sentences[:2], 1):
+                sentence = "你好"  # 仅测试连接
                 start = time.time()
+
                 tmp_file = tts.generate_filename()
                 await tts.text_to_speak(sentence, tmp_file)
                 duration = time.time() - start
@@ -302,8 +306,8 @@ class AsyncPerformanceTester:
                 )
 
         if llm_table:
-            print("\nLLM 性能排行:")
-            print(
+           print("\nLLM 性能排行:")
+           print(
                 tabulate(
                     llm_table,
                     headers=["模型名称", "首字耗时", "总耗时", "稳定性"],
@@ -377,13 +381,14 @@ class AsyncPerformanceTester:
 
     async def run(self):
         """执行全量异步测试"""
-        print("🔍 开始筛选可用模块...")
+    
 
         # 创建所有测试任务
         all_tasks = []
-
+    
         # LLM测试任务
         for llm_name, config in self.config.get("LLM", {}).items():
+            print(f"🔍 LLM:{llm_name}")
             # 检查配置有效性
             if llm_name == "CozeLLM":
                 if any(x in config.get("bot_id", "") for x in ["你的"]) or any(
@@ -409,13 +414,15 @@ class AsyncPerformanceTester:
                     continue
 
             print(f"📋 添加LLM测试任务: {llm_name}")
-            module_type = config.get("type", llm_name)
-            llm = create_llm_instance(module_type, config)
 
-            # 为每个句子创建独立任务
-            for sentence in self.test_sentences:
-                sentence = sentence.encode("utf-8").decode("utf-8")
-                all_tasks.append(self._test_single_sentence(llm_name, llm, sentence))
+            for i in range(50):
+                module_type = config.get("type", llm_name)
+                llm = create_llm_instance(module_type, config)
+
+                # 为每个句子创建独立任务
+                for sentence in self.test_sentences:
+                    sentence = sentence.encode("utf-8").decode("utf-8")
+                    all_tasks.append(self._test_single_sentence(llm_name+str(i), llm, sentence))
 
         # TTS测试任务
         for tts_name, config in self.config.get("TTS", {}).items():
@@ -427,8 +434,9 @@ class AsyncPerformanceTester:
             ):
                 print(f"⏭️  TTS {tts_name} 未配置access_token/api_key，已跳过")
                 continue
-            print(f"🎵 添加TTS测试任务: {tts_name}")
-            all_tasks.append(self._test_tts(tts_name, config))
+            for i in range(50):
+                print(f"🎵 添加TTS测试任务: {tts_name+str(i)}")
+                all_tasks.append(self._test_tts(tts_name+str(i), config))
 
         print(
             f"\n✅ 找到 {len([t for t in all_tasks if 'test_single_sentence' in str(t)]) / len(self.test_sentences):.0f} 个可用LLM模块"
@@ -506,4 +514,19 @@ async def main():
 
 
 if __name__ == "__main__":
+   asyncio.run(main())
+    
+# ...existing code...
+
+def run_main_in_thread():
     asyncio.run(main())
+
+# if __name__ == "__main__":
+#     with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+#         futures = [executor.submit(run_main_in_thread) for _ in range(30)]
+#         for future in concurrent.futures.as_completed(futures):
+#             try:
+#                 future.result()
+#             except Exception as e:
+#                 print(f"线程执行出错: {e}")
+# ...existing code...

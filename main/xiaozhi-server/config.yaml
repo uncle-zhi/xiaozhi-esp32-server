@@ -327,12 +327,13 @@ LLM:
     # 可在这里找到你的api key https://bigmodel.cn/usercenter/proj-mgmt/apikeys
     model_name: glm-4-flash
     url: https://open.bigmodel.cn/api/paas/v4/
-    api_key: 你的chat-glm web key
+    api_key: 90f4ed43fd5dbb42b7ec2d29dfae5f1a.aGPtqL4lr42xGNGF
   OllamaLLM:
     # 定义LLM API类型
     type: ollama
     model_name: qwen2.5 #  使用的模型名称，需要预先使用ollama pull下载
     base_url: http://localhost:11434  # Ollama服务地址
+    api_key: 你的xxxkey
   DifyLLM:
     # 定义LLM API类型
     type: dify
@@ -379,7 +380,7 @@ LLM:
     type: openai
     model_name: deepseek-r1-distill-llama-8b@q4_k_m # 使用的模型名称，需要预先在社区下载
     url: http://localhost:1234/v1 # LM Studio服务地址
-    api_key: lm-studio # LM Studio服务的固定API Key
+    api_key: 你的lm-studio # LM Studio服务的固定API Key
   FastgptLLM:
     # 定义LLM API类型
     type: fastgpt
@@ -387,7 +388,7 @@ LLM:
     base_url: https://host/api/v1
     # 你可以在这里找到你的api_key
     # https://cloud.tryfastgpt.ai/account/apikey
-    api_key: fastgpt-xxx
+    api_key: 你的fastgpt-xxx
     variables:
       k: "v"
       k2: "v2"
@@ -396,13 +397,15 @@ LLM:
     type: xinference
     # Xinference服务地址和模型名称
     model_name: qwen2.5:72b-AWQ  # 使用的模型名称，需要预先在Xinference启动对应模型
-    base_url: http://localhost:9997  # Xinference服务地址
+    base_url: 你的http://localhost:9997  # Xinference服务地址
+    api_key: 你的xxxkey
   XinferenceSmallLLM:
     # 定义轻量级LLM API类型，用于意图识别
     type: xinference
     # Xinference服务地址和模型名称
     model_name: qwen2.5:3b-AWQ  # 使用的小模型名称，用于意图识别
-    base_url: http://localhost:9997  # Xinference服务地址
+    base_url: 你的 http://localhost:9997  # Xinference服务地址
+    api_key: 你的xxxkey
 TTS:
   # 当前支持的type为edge、doubao，可自行适配
   EdgeTTS:
@@ -512,6 +515,7 @@ TTS:
     parallel_infer: true
     repetition_penalty: 1.35
     aux_ref_audio_paths: []
+    api_key: 你的xxxkey
   GPT_SOVITS_V3:
     # 定义TTS API类型 GPT-SoVITS-v3lora-20250228
     #启动tts方法：
@@ -531,6 +535,7 @@ TTS:
     inp_refs: []
     sample_steps: 32
     if_sr: false
+    api_key: 你的xxxkey
   MinimaxTTS:
     # Minimax语音合成服务，需要先在minimax平台创建账户充值，并获取登录信息
     # 平台地址：https://platform.minimaxi.com/
@@ -602,7 +607,7 @@ TTS:
     secret_key: 你的腾讯云SecretKey
     region: ap-guangzhou
     voice: 101001
-
+    api_key: 你的xxxkey
   TTS302AI:
     # 302AI语音合成服务，需要先在302平台创建账户充值，并获取密钥信息
     # 获取api_keyn路径：https://dash.302.ai/apis/list
@@ -642,6 +647,7 @@ TTS:
     format: mp3
     output_dir: tmp/
     emotion: 1
+    api_key: 你的xxxkey
   OpenAITTS:
     # openai官方文本转语音服务，可支持全球大多数语种
     type: openai
@@ -672,3 +678,4 @@ TTS:
       # Authorization: Bearer xxxx
     format: wav # 接口返回的音频格式
     output_dir: tmp/
+    api_key: 你的xxxkey
